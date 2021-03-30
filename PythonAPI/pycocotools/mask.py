@@ -31,6 +31,7 @@ import pycocotools._mask as _mask
 #  encode         - Encode binary masks using RLE.
 #  decode         - Decode binary masks encoded via RLE.
 #  merge          - Compute union or intersection of encoded masks.
+#  xor            - Compute XOR operation of encoded masks.
 #  iou            - Compute intersection over union between masks.
 #  area           - Compute area of encoded masks.
 #  toBbox         - Get bounding boxes surrounding encoded masks.
@@ -40,6 +41,7 @@ import pycocotools._mask as _mask
 #  Rs     = encode( masks )
 #  masks  = decode( Rs )
 #  R      = merge( Rs, intersect=false )
+#  R      = xor( Rs)
 #  o      = iou( dt, gt, iscrowd )
 #  a      = area( Rs )
 #  bbs    = toBbox( Rs )
@@ -75,6 +77,7 @@ import pycocotools._mask as _mask
 
 iou         = _mask.iou
 merge       = _mask.merge
+xor         = _mask.xor
 frPyObjects = _mask.frPyObjects
 
 def encode(bimask):
