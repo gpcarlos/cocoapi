@@ -34,6 +34,7 @@ import pycocotools._mask as _mask
 #  xor            - Compute XOR operation of encoded masks.
 #  iou            - Compute intersection over union between masks.
 #  area           - Compute area of encoded masks.
+#  nms            - Compute non-maximum suppression between bounding masks.
 #  toBbox         - Get bounding boxes surrounding encoded masks.
 #  frPyObjects    - Convert polygon, bbox, and uncompressed RLE to encoded RLE mask.
 #
@@ -44,6 +45,7 @@ import pycocotools._mask as _mask
 #  R      = xor( Rs)
 #  o      = iou( dt, gt, iscrowd )
 #  a      = area( Rs )
+#  keep   = nms( Rs, thr )
 #  bbs    = toBbox( Rs )
 #  Rs     = frPyObjects( [pyObjects], h, w )
 #
@@ -55,6 +57,7 @@ import pycocotools._mask as _mask
 #  bbs     - [nx4] Bounding box(es) stored as [x y w h]
 #  poly    - Polygon stored as [[x1 y1 x2 y2...],[x1 y1 ...],...] (2D list)
 #  dt,gt   - May be either bounding boxes or encoded masks
+#  thr     - iou threshold, float in the range [0,1].
 # Both poly and bbs are 0-indexed (bbox=[0 0 1 1] encloses first pixel).
 #
 # Finally, a note about the intersection over union (iou) computation.
@@ -98,6 +101,12 @@ def area(rleObjs):
         return _mask.area(rleObjs)
     else:
         return _mask.area([rleObjs])[0]
+
+def nms(rleObjs, thr):
+    if type(rleObjs) == list:
+        return _mask.nms(rleObjs, thr)
+    else:
+        return _mask.nms([rleObjs], thr)[0]
 
 def toBbox(rleObjs):
     if type(rleObjs) == list:

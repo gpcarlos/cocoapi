@@ -42,6 +42,7 @@ cdef extern from "maskApi.h":
     void rleEncode( RLE *R, const byte *M, siz h, siz w, siz n )
     void rleDecode( const RLE *R, byte *mask, siz n )
     void rleMerge( const RLE *R, RLE *M, siz n, int intersect )
+    void rleNms( RLE *dt, siz n, uint *keep, double thr )
     void rleXOR( const RLE *R, RLE *M, siz n )
     void rleArea( const RLE *R, siz n, uint *a )
     void rleIou( RLE *dt, RLE *gt, siz m, siz n, byte *iscrowd, double *o )
@@ -156,6 +157,18 @@ def merge(rleObjs, intersect=0):
     rleMerge(<RLE*>Rs._R, <RLE*> R._R, <siz> Rs._n, intersect)
     obj = _toString(R)[0]
     return obj
+
+def nms(rleObjs, thr):
+    cdef RLEs Rs = _frString(rleObjs)
+    cdef uint* _keep = <uint*> malloc(Rs._n * sizeof(uint))
+
+    rleNms(<RLE*>Rs._R, <siz> Rs._n, _keep, thr)
+
+    cdef np.ndarray[np.uint8_t, ndim=1] keep = np.ones((Rs._n,), dtype=np.uint8)
+    for i in range(Rs._n):
+        keep[i] = _keep[i]
+
+    return keep
 
 def xor(rleObjs):
     cdef RLEs Rs = _frString(rleObjs)
